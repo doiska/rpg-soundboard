@@ -12,7 +12,7 @@
     "node": "18"
   },
   "scripts": {
-    "watch": "pnpm run --recursive dev"
+    "watch": "pnpm run --reporter=append-only --recursive dev"
   },
   "keywords": [],
   "author": "",
