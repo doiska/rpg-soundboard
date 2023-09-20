@@ -9,7 +9,7 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
 export function Sidebar({ title, children, className }: SidebarProps) {
   return (
     <div className={cn("w-full border-l-2", className)}>
-      <div className="space-y-4 p-4">
+      <div className="space-y-4 px-2 mt-2">
         <div>
           <h2 className="relative text-xl font-semibold tracking-tight">
             {title}
