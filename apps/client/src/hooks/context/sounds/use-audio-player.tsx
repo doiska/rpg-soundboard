@@ -1,3 +1,5 @@
+"use client"
+
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 type TrackInfo = {
@@ -16,10 +18,11 @@ type TrackState = {
 type AudioPlayerContextType = {
   tracks: {
     info: TrackInfo;
+    context: AudioContext;
     audioNode: AudioBufferSourceNode;
     state: TrackState;
   }[];
-  addTrack: (track: TrackInfo) => number;
+  addTrack: (track: TrackInfo) => void;
   playTrack: (trackId: number) => void;
   stopTrack: (trackId: number) => void;
   isTrackPlaying: (trackId: number) => boolean;
@@ -35,21 +38,10 @@ export function AudioPlayerProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [context] = useState(
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    new (window.AudioContext || window.webkitAudioContext)(),
-  );
 
-  const [tracks, setTracks] = useState<
-    { info: TrackInfo; audioNode: AudioBufferSourceNode; state: TrackState }[]
-  >([]);
+  const [tracks, setTracks] =
+      useState<AudioPlayerContextType['tracks'][number][]>([]);
 
-  useEffect(() => {
-    return () => {
-      context.close(); // Close the audio context when the component unmounts
-    };
-  }, [context]);
 
   const playTrack = (trackId: number) => {
     setTracks((prevTracks) => {
@@ -68,9 +60,12 @@ export function AudioPlayerProvider({
     setTracks((prevTracks) => {
       return prevTracks.map((track) => {
         if (track.info.id === trackId) {
-          const { audioNode, state } = track;
+
+          const { audioNode, state, context } = track;
           audioNode.stop();
-          audioNode.disconnect(); // Disconnect the audio node
+          audioNode.disconnect();
+          context.close();
+
           return { ...track, state: { ...state, playing: false } };
         }
         return track;
@@ -90,24 +85,25 @@ export function AudioPlayerProvider({
   };
 
   const addTrack = (track: TrackInfo) => {
-    context.resume(); // Ensure audio context is resumed to play audio on mobile devices
     fetch(track.url)
       .then((response) => response.arrayBuffer())
       .then((buffer) => {
+        const context = new AudioContext();
         context.decodeAudioData(buffer, (audioBuffer) => {
           const audioNode = context.createBufferSource();
           audioNode.buffer = audioBuffer;
           audioNode.connect(context.destination); // Connect audio node to output
           audioNode.onended = () => {
-            // Remove track when it finishes playing
             removeTrack(track.id);
           };
           const state = { playing: false, position: 0 };
+
           setTracks((prevTracks) => [
             ...prevTracks,
             {
               audioNode,
               info: track,
+                context,
               state,
             },
           ]);
@@ -115,7 +111,7 @@ export function AudioPlayerProvider({
         });
       });
 
-    return tracks.length; // Return the ID (index) of the newly added track
+    return tracks.length;
   };
 
   return (
