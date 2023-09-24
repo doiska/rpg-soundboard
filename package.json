@@ -1,8 +1,5 @@
 {
-  "name": "rpg-sounboard",
-  "workspaces": [
-    "packages/*"
-  ],
+  "name": "rpg-soundboard",
   "private": "true",
   "version": "0.0.1",
   "description": "",
@@ -12,7 +9,7 @@
     "node": "18"
   },
   "scripts": {
-    "watch": "pnpm run --reporter=append-only --recursive dev"
+    "watch": "pnpm run --reporter=append-only --recursive --parallel start:dev"
   },
   "keywords": [],
   "author": "",
