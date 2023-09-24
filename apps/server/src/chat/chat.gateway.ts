@@ -22,6 +22,7 @@ export class ChatGateway {
     ServerToClientEvents,
     ClientToServerEvents
   >();
+
   private logger = new Logger('ChatGateway');
 
   @SubscribeMessage('chat')

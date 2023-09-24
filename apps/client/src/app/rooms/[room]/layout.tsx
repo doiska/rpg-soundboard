@@ -2,7 +2,7 @@
 
 import { Sidebar } from "@/components/room/sidebar";
 import { SoundboardSidebar } from "@/components/room/soundboard/sidebar/soundboard-sidebar";
-import { ChatSidebar } from "@/components/room/players/chat-sidebar";
+import { ChatSidebar } from "@/components/room/players/chat/chat-sidebar";
 import { cn } from "@/lib/utils";
 
 const sidebars = {
