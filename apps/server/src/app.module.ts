@@ -9,7 +9,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
   imports: [
     ChatModule,
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', '..', '..', 'dist', 'client'),
+      rootPath: join(__dirname, '..', '..', '..', 'src', 'dist', 'client'),
     }),
   ],
   controllers: [AppController],

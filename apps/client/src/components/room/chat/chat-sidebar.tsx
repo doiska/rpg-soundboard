@@ -1,4 +1,4 @@
-import {ChatConversation} from "@/components/room/players/chat/chat-conversation";
+import {ChatConversation} from "@/components/room/chat/chat-conversation";
 
 export function ChatSidebar() {
   return (

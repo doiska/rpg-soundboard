@@ -6,7 +6,7 @@ let socket: Socket;
 
 export function initializeSocket(): Socket {
     if (!socket) {
-        socket = io("http://localhost:3001");
+        socket = io("http://localhost:3005");
     }
     return socket;
 }

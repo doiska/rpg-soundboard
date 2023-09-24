@@ -19,8 +19,6 @@ export function useChat() {
         }
     }, [socket]);
 
-
-
     return {messages};
 }
 
