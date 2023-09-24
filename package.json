@@ -1,17 +1,16 @@
 {
-  "name": "rpg-soundboard",
-  "private": "true",
+  "name": "rpg-",
+  "private": true,
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "type": "commonjs",
+  "packageManager": "pnpm@8.7.5",
   "engines": {
     "node": "18"
   },
   "scripts": {
-    "watch:server": "cd apps/server && bun start:dev",
-    "watch:client": "cd apps/client && bun start:dev",
-    "watch": "concurrently -k -p \"[{name}]\" -n \"Server,Client\" -c \"yellow.bold,cyan.bold\" \"npm run watch:server\" \"npm run watch:client\""
+    "watch": "turbo dev"
   },
   "keywords": [],
   "author": "",
