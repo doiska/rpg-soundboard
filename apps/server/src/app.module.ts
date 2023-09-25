@@ -8,7 +8,16 @@ import { UserModule } from './users/user.module';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', '..', '..', 'src', 'dist', 'client'),
+      rootPath: join(
+        __dirname,
+        '..',
+        '..',
+        '..',
+        'apps',
+        'server',
+        'dist',
+        'client',
+      ),
     }),
     ChatModule,
     RoomModule,
