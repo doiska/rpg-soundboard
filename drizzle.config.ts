@@ -2,7 +2,7 @@ import { Config } from "drizzle-kit";
 
 const config = {
   out: "./migrations",
-  schema: "./src/lib/db",
+  schema: "./apps/shared/schemas",
   driver: "pg",
 } satisfies Config;
 

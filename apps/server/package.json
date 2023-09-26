@@ -25,7 +25,6 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/platform-socket.io": "^10.2.6",
     "@nestjs/serve-static": "^4.0.0",
-    "@nestjs/swagger": "^7.1.12",
     "@nestjs/websockets": "^10.2.6",
     "@rpg/shared": "workspace:*",
     "reflect-metadata": "^0.1.13",
