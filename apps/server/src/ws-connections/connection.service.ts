@@ -21,6 +21,10 @@ export class ConnectionService {
       .where(eq(connections.socketId, socketId));
   }
 
+  async findByUserId(userId: string) {
+    return kil.select().from(connections).where(eq(connections.userId, userId));
+  }
+
   async deleteBySocketId(socketId: string) {
     await kil.delete(connections).where(eq(connections.socketId, socketId));
   }

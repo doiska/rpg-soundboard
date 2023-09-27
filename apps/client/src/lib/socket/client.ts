@@ -10,9 +10,8 @@ export function initializeSocket(): Socket {
     socket = io("http://localhost:3005", {
       auth: (cb) => {
         getSession().then((session) => {
-          console.log(session)
           cb({
-            token: session?.user?.name,
+            token: session?.accessToken,
           })
         })
       },

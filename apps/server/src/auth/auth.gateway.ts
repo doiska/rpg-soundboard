@@ -11,6 +11,7 @@ import {
 import { ConnectionService } from '../ws-connections/connection.service';
 import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common';
+import { AuthenticatedSocket, sessionSchema } from './auth.schema';
 
 @WebSocketGateway({
   cors: {
@@ -21,24 +22,41 @@ import { Logger } from '@nestjs/common';
 export class AuthGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server<ServerToClientEvents, ClientToServerEvents>;
 
-  private logger = new Logger('ChatGateway');
+  private logger = new Logger('AuthGateway');
 
   constructor(private connectionService: ConnectionService) {}
 
-  async handleConnection(socket: Socket) {
-    const token = socket.handshake.auth.token;
+  async handleConnection(socket: AuthenticatedSocket) {
+    const parse = sessionSchema.safeParse(socket.jwt);
 
-    if (!token) {
+    if (!parse.success) {
       this.logger.error(`No token provided ${socket.id}`);
       await this.connectionService.deleteBySocketId(socket.id);
 
       socket.disconnect();
     } else {
-      this.logger.log(`Token provided ${socket.id}`);
+      const [result] = await this.connectionService.findByUserId(
+        socket.jwt.email,
+      );
+
+      if (result) {
+        const oldSocket = this.server.sockets.sockets.get(result.socketId);
+
+        if (oldSocket) {
+          oldSocket.disconnect();
+          this.logger.log(`Disconnecting old socket: ${result.socketId}`);
+        }
+
+        await this.connectionService.deleteBySocketId(result.socketId);
+        this.logger.log(`Old socket disconnected: ${result.socketId}`);
+      }
+
       await this.connectionService.create({
-        userId: token,
         socketId: socket.id,
+        userId: socket.jwt.email,
       });
+
+      this.logger.log(`Client connected: ${socket.id}`);
     }
   }
 

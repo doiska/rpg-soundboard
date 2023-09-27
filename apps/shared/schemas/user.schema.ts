@@ -1,6 +1,6 @@
-import {integer, pgTable, primaryKey, text, timestamp} from "drizzle-orm/pg-core";
+import {integer, pgSchema, primaryKey, text, timestamp} from "drizzle-orm/pg-core";
 
-export const users = pgTable("user", {
+export const users = pgSchema('app').table("user", {
     id: text("id").notNull().primaryKey(),
     name: text("name"),
     email: text("email").notNull(),
@@ -8,7 +8,7 @@ export const users = pgTable("user", {
     image: text("image"),
 });
 
-export const accounts = pgTable(
+export const accounts = pgSchema('app').table(
     "account",
     {
         userId: text("userId")

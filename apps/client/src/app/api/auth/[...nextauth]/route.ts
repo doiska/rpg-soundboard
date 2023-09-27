@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken"
 import NextAuth, { AuthOptions, DefaultSession } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 
@@ -13,22 +14,20 @@ export const authOptions: AuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    async session({ session, token }) {
-      // Send properties to the client, like an access_token and user id from a provider.
-      console.log(session)
-      console.log(token)
-
-      return session
-    },
-    async jwt({ token, account, profile }) {
-      console.log(token)
-      console.log(account)
-      console.log(profile)
-
-      if (account) {
-        token.accessToken = account.access_token
+    session: ({ session }) => {
+      if (!session.accessToken) {
+        session.accessToken = jwt.sign(
+          {
+            name: session.user?.name,
+            email: session.user?.email,
+          },
+          "TESTE_SECRET",
+          {
+            expiresIn: "30d",
+          }
+        )
       }
-      return token
+      return session
     },
   },
   providers: [
