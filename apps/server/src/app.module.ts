@@ -1,29 +1,12 @@
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { Module } from '@nestjs/common';
-import { join } from 'path';
-import { ChatModule } from './chat/chat.module';
 import { RoomModule } from './rooms/room.module';
 import { UserModule } from './users/user.module';
+import { AuthGateway } from './auth/auth.gateway';
+import { ConnectionService } from './ws-connections/connection.service';
 
 @Module({
-  imports: [
-    ServeStaticModule.forRoot({
-      rootPath: join(
-        __dirname,
-        '..',
-        '..',
-        '..',
-        'apps',
-        'server',
-        'dist',
-        'client',
-      ),
-    }),
-    ChatModule,
-    RoomModule,
-    UserModule,
-  ],
+  imports: [RoomModule, UserModule],
   controllers: [],
-  providers: [],
+  providers: [AuthGateway, ConnectionService],
 })
 export class AppModule {}

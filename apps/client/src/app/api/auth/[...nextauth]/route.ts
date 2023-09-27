@@ -1,8 +1,36 @@
-import NextAuth from "next-auth"
+import NextAuth, { AuthOptions, DefaultSession } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 
-export const authOptions = {
+declare module "next-auth" {
+  interface Session extends DefaultSession {
+    accessToken: string
+  }
+}
+
+export const authOptions: AuthOptions = {
   // Configure one or more authentication providers
+  session: {
+    strategy: "jwt",
+  },
+  callbacks: {
+    async session({ session, token }) {
+      // Send properties to the client, like an access_token and user id from a provider.
+      console.log(session)
+      console.log(token)
+
+      return session
+    },
+    async jwt({ token, account, profile }) {
+      console.log(token)
+      console.log(account)
+      console.log(profile)
+
+      if (account) {
+        token.accessToken = account.access_token
+      }
+      return token
+    },
+  },
   providers: [
     CredentialsProvider({
       // The name to display on the sign-in form (e.g. "Sign in with...")

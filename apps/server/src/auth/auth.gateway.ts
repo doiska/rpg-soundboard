@@ -1,16 +1,16 @@
 import {
+  OnGatewayConnection,
   WebSocketGateway,
   WebSocketServer,
-  OnGatewayConnection,
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
 import {
   ClientToServerEvents,
   ServerToClientEvents,
 } from '../../../shared/interfaces/chat.interface';
-import { Logger } from '@nestjs/common';
 import { ConnectionService } from '../ws-connections/connection.service';
+import { Server, Socket } from 'socket.io';
+import { Logger } from '@nestjs/common';
 
 @WebSocketGateway({
   cors: {
@@ -18,21 +18,14 @@ import { ConnectionService } from '../ws-connections/connection.service';
     credentials: true,
   },
 })
-export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class AuthGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server<ServerToClientEvents, ClientToServerEvents>;
 
   private logger = new Logger('ChatGateway');
 
   constructor(private connectionService: ConnectionService) {}
 
-  async handleDisconnect(socket: Socket) {
-    await this.connectionService.deleteBySocketId(socket.id);
-    socket.disconnect();
-  }
-
   async handleConnection(socket: Socket) {
-    console.log(socket.handshake.auth);
-
     const token = socket.handshake.auth.token;
 
     if (!token) {
@@ -47,5 +40,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         socketId: socket.id,
       });
     }
+  }
+
+  async handleDisconnect(socket: Socket) {
+    await this.connectionService.deleteBySocketId(socket.id);
+    socket.disconnect();
   }
 }
