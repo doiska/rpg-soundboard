@@ -21,7 +21,9 @@ export class RoomController {
   @Post('api/room')
   @UsePipes(new ZodValidationPipe(roomsInsertSchema))
   async addRoom(@Body() room: Room) {
-    return this.roomService.createRoom(room);
+    const insertedId = await this.roomService.createRoom(room);
+
+    return { id: insertedId };
   }
 
   @Get('api/room/:id')

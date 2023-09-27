@@ -17,7 +17,9 @@ export class RoomService {
       throw new ConflictException('Room already exists');
     }
 
-    await kil.insert(rooms).values(room);
+    const result = await kil.insert(rooms).values(room).returning();
+
+    return result[0].id;
   }
 
   async deleteRoom(id: string) {
